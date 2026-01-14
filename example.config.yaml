@@ -23,3 +23,24 @@ include_backup_name: true
 # When enabled, files will be organized as: component/filearea/username/filename
 # Example: mod_forum/post/admin/image.png
 organize_by_user: false
+
+
+# OPTIONAL SETTINGS
+# When enabled, the Rclone Uploader will upload .mbz files and results to a remote storage after processing
+enable_rclone_uploader: false
+# Rclone Uploader Configuration
+rclone:
+  # Name of the rclone remote to use
+  remote_name: "remote-name"
+
+  # Path on the remote where files will be uploaded
+  remote_path: "Destination"
+
+  # Subfolder path for archiving original .mbz files
+  # Will be uploaded to: remote_path/mbz_archive_path
+  mbz_archive_path: "mbz_archive"
+
+  # Delete local files after successful upload
+  # When true: Uses 'rclone move' (deletes local files/folders after upload)
+  # When false: Uses 'rclone copy' (keeps local files/folders)
+  delete_after_upload: false
