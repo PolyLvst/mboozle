@@ -1,0 +1,2 @@
+CRON_TZ=Asia/Jakarta
+0 3 * * * /root/mboozle/run.sh
