@@ -1,0 +1,9 @@
+services:
+  rclone_uploader:
+    build:
+      context: .
+      dockerfile: Dockerfile.rclone
+    volumes:
+      - ./rclone-config:/root/.config/rclone/
+    tty: true
+    stdin_open: true

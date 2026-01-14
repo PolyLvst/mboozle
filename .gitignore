@@ -9,3 +9,4 @@ extracted**/
 results**/
 **__pycache__**/
 rclone.conf
+**venv**/
