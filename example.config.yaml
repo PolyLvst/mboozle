@@ -22,7 +22,7 @@ include_backup_name: true
 # Organize files by username within activities
 # When enabled, files will be organized as: component/filearea/username/filename
 # Example: mod_forum/post/admin/image.png
-organize_by_user: false
+organize_by_user: true
 
 
 # OPTIONAL SETTINGS
