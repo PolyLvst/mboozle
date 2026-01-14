@@ -1,0 +1,10 @@
+.env
+*.mbz
+*.tar.gz
+*.zip
+**venv**
+config.yaml
+config.yml
+extracted**/
+results**/
+**__pycache__**/

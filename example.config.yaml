@@ -1,0 +1,25 @@
+# Mboozle Crawler Configuration
+
+# Directory where input Moodle backup files are located
+inputs: "."
+
+# Directory where extracted Moodle backup files are located
+outputs: './extracted'
+
+# Directory where restored files will be saved (only used if extract_to_source is false)
+results: './results'
+
+# Extract files into the source extracted folder instead of a separate results folder
+# When true: extracted/backup-folder-name/CourseName/component/filearea/...
+# When false: results/[backup-folder-name]/CourseName/component/filearea/...
+extract_to_source: false
+
+# Include backup folder name in results path (only used when extract_to_source is false)
+# When true: results/backup-folder-name/CourseName/...
+# When false: results/CourseName/...
+include_backup_name: true
+
+# Organize files by username within activities
+# When enabled, files will be organized as: component/filearea/username/filename
+# Example: mod_forum/post/admin/image.png
+organize_by_user: false
