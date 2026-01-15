@@ -20,24 +20,35 @@ class MboozleCrawler:
     def crawl(self):
         # CONFIGURATION: Output directory for extracted files, and results directory
         output_dir = self.config.get('outputs', './extracted')
-        results_dir = self.config.get('results', './results')
-        organize_by_user = self.config.get('organize_by_user', False)
-        extract_to_source = self.config.get('extract_to_source', False)
-        include_backup_name = self.config.get('include_backup_name', True)
 
         if not os.path.exists(output_dir):
             print(f'Extracted directory {output_dir} not found. Please run the extractor first.')
             return
         
-        # Find the backup folder (should be the only folder in extracted)
+        # Find all backup folders
         backup_folders = [f for f in os.listdir(output_dir) if os.path.isdir(os.path.join(output_dir, f))]
         if not backup_folders:
-            print(f'No backup folder found in {output_dir}')
+            print(f'No backup folders found in {output_dir}')
             return
         
-        backup_folder = os.path.join(output_dir, backup_folders[0])
-        backup_folder_name = backup_folders[0]
-        print(f'Processing backup: {backup_folder_name}')
+        print(f'Found {len(backup_folders)} backup folder(s) to process\n')
+        
+        # Process each backup folder
+        for idx, backup_folder_name in enumerate(backup_folders, 1):
+            print(f'[{idx}/{len(backup_folders)}] Processing backup: {backup_folder_name}')
+            backup_folder = os.path.join(output_dir, backup_folder_name)
+            self._process_backup(backup_folder, backup_folder_name)
+            print()  # Add blank line between backups
+        
+        print(f'=== All Backups Processed ===')
+        print(f'Total backups processed: {len(backup_folders)}')
+    
+    def _process_backup(self, backup_folder, backup_folder_name):
+        """Process a single backup folder"""
+        results_dir = self.config.get('results', './results')
+        organize_by_user = self.config.get('organize_by_user', False)
+        extract_to_source = self.config.get('extract_to_source', False)
+        include_backup_name = self.config.get('include_backup_name', True)
         
         # Parse course.xml to get course name
         course_xml_path = os.path.join(backup_folder, 'course', 'course.xml')
@@ -150,7 +161,6 @@ class MboozleCrawler:
             if files_processed % 10 == 0:
                 print(f'Processed {files_processed} files...')
         
-        print(f'\n=== Crawl Complete ===')
         print(f'Files processed: {files_processed}')
         print(f'Files skipped: {files_skipped}')
         print(f'Results saved to: {results_dir}')
