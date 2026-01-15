@@ -9,15 +9,6 @@ KUMA_URL=""
 
 cd "$PROJECT_DIR"
 
-# Only continue if today is Monday in Jakarta (1 = Monday, 7 = Sunday)
-if [ "$(TZ=Asia/Jakarta date +%u)" != "1" ]; then
-    if [ -n "$KUMA_URL" ]; then
-        curl -fsS "$KUMA_URL?status=up&msg=Mboozle+rclone+Skipped+not+monday" || true
-    fi
-    echo "$(date): Mboozle Skipped, not monday" >> "$LOG_FILE"
-    exit 0
-fi
-
 # Detect docker-compose vs docker compose
 if command -v docker-compose >/dev/null 2>&1; then
     DOCKER_COMPOSE="docker-compose"
