@@ -102,9 +102,14 @@ class MboozleCrawler:
         # Create results directory
         os.makedirs(results_dir, exist_ok=True)
         
+        # Track files by destination path to detect duplicates
+        # Key: destination file path, Value: dict with file metadata
+        files_registry = {}
+        
         # Process each file entry
         files_processed = 0
         files_skipped = 0
+        files_deduplicated = 0
         
         for file_elem in root.findall('file'):
             contenthash = file_elem.find('contenthash').text
@@ -147,13 +152,36 @@ class MboozleCrawler:
             # Copy file with original filename
             dest_file = os.path.join(dest_dir, filename)
             
-            # Handle duplicate filenames
-            if os.path.exists(dest_file):
-                base, ext = os.path.splitext(filename)
-                counter = 1
-                while os.path.exists(dest_file):
+            # Handle duplicate filenames with robust checking
+            if dest_file in files_registry:
+                # Check if it's the exact same file based on metadata
+                existing_metadata = files_registry[dest_file]
+                if (existing_metadata['contenthash'] == contenthash and
+                    existing_metadata['filesize'] == filesize and
+                    existing_metadata['filepath'] == filepath and
+                    existing_metadata['component'] == component and
+                    existing_metadata['filearea'] == filearea):
+                    # Same file, skip duplicate
+                    files_deduplicated += 1
+                    continue
+                else:
+                    # Different file with same name, append counter
+                    base, ext = os.path.splitext(filename)
+                    counter = 1
                     dest_file = os.path.join(dest_dir, f'{base}_{counter}{ext}')
-                    counter += 1
+                    while dest_file in files_registry:
+                        counter += 1
+                        dest_file = os.path.join(dest_dir, f'{base}_{counter}{ext}')
+            
+            # Register this file with its metadata
+            files_registry[dest_file] = {
+                'contenthash': contenthash,
+                'filesize': filesize,
+                'filepath': filepath,
+                'component': component,
+                'filearea': filearea,
+                'userid': userid
+            }
             
             shutil.copy2(source_file, dest_file)
             files_processed += 1
@@ -163,6 +191,7 @@ class MboozleCrawler:
         
         print(f'Files processed: {files_processed}')
         print(f'Files skipped: {files_skipped}')
+        print(f'Files deduplicated: {files_deduplicated}')
         print(f'Results saved to: {results_dir}')
 
 
